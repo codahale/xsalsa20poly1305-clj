@@ -1,4 +1,4 @@
-(defproject com.codahale/xsalsa20poly1305 "0.1.0"
+(defproject com.codahale/xsalsa20poly1305 "0.1.1-SNAPSHOT"
   :description "A Clojure wrapper for XSalsa20Poly1305 encryption."
   :url "https://github.com/codahale/xsalsa20poly1305"
   :license {:name "Eclipse Public License"
