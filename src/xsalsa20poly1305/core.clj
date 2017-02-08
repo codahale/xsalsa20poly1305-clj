@@ -6,11 +6,16 @@
            (org.bouncycastle.crypto.params KeyParameter ParametersWithIV)
            (org.bouncycastle.util Arrays)))
 
+(def ^:private nonce-size 24)
+(def ^:private mac-key-size 32)
+(def ^:private mac-size 16)
+(def ^:private overhead-size (+ mac-size nonce-size))
+
 (defn- nonce
   "Generate a random, 24-byte nonce."
   []
   (let [r (SecureRandom.)
-        n (byte-array 24)]
+        n (byte-array nonce-size)]
     (.nextBytes r n)
     n))
 
@@ -18,66 +23,70 @@
   "Encrypts the given plaintext with the given key using XSalsa20Poly1305 and
   returns the ciphertext."
   [^bytes k ^bytes p]
-  (let [n  (nonce)
-        ce (XSalsa20Engine.)
-        me (Poly1305.)
-        sk (byte-array 32)
-        o  (byte-array (+ (count p) 40))]
+  (let [xsalsa20 (XSalsa20Engine.)
+        poly1305 (Poly1305.)
+        n        (nonce)
+        sk       (byte-array mac-key-size)
+        o        (byte-array (+ (count p) overhead-size))]
 
     ;; initialize xsalsa20
-    (.init ce false (ParametersWithIV. (KeyParameter. k) n))
+    (.init xsalsa20 false (ParametersWithIV. (KeyParameter. k) n))
 
     ;; generate poly1305 subkey
-    (.processBytes ce sk 0 (count sk) sk 0)
+    (.processBytes xsalsa20 sk 0 (count sk) sk 0)
 
     ;; encrypt plaintext
-    (.processBytes ce p 0 (count p) o 40)
+    (.processBytes xsalsa20 p 0 (count p) o overhead-size)
 
     ;; hash ciphertext
-    (.init me (KeyParameter. sk))
-    (.update me o 40 (count p))
+    (.init poly1305 (KeyParameter. sk))
+    (.update poly1305 o overhead-size (count p))
 
     ;; prepend the mac
-    (.doFinal me o 24)
+    (.doFinal poly1305 o nonce-size)
 
     ;; prepend the nonce
-    (System/arraycopy n 0 o 0 24)
+    (System/arraycopy n 0 o 0 nonce-size)
 
     ;; return nonce + mac + ciphertext
     o))
 
 (defn unseal
+  "Decrypts the given ciphertext with the given key using XSalsa20Poly1305 and
+  returns the plaintext. If the ciphertext has been modified in any way, or if
+  the key is incorrect, an IllegalArgumentException is thrown."
   [^bytes k ^bytes c]
-  (let [n  (byte-array 24)
-        ce (XSalsa20Engine.)
-        me (Poly1305.)
-        sk (byte-array 32)
-        h1 (byte-array 16)
-        h2 (byte-array 16)
-        o  (byte-array (- (count c) 40))]
+  (let [xsalsa20 (XSalsa20Engine.)
+        poly1305 (Poly1305.)
+        n        (byte-array nonce-size)
+        sk       (byte-array mac-key-size)
+        h1       (byte-array mac-size)
+        h2       (byte-array mac-size)
+        o        (byte-array (- (count c) overhead-size))]
 
     ;; extract nonce
-    (System/arraycopy c 0 n 0 24)
+    (System/arraycopy c 0 n 0 nonce-size)
 
     ;; extract mac
-    (System/arraycopy c 24 h1 0 16)
+    (System/arraycopy c nonce-size h1 0 mac-size)
 
-    (.init ce false (ParametersWithIV. (KeyParameter. k) n))
+    ;; initialize xsalsa20
+    (.init xsalsa20 false (ParametersWithIV. (KeyParameter. k) n))
 
     ;; generate poly1305 subkey
-    (.processBytes ce sk 0 (count sk) sk 0)
+    (.processBytes xsalsa20 sk 0 (count sk) sk 0)
 
     ;; hash ciphertext
-    (.init me (KeyParameter. sk))
-    (.update me c 40 (count o))
-    (.doFinal me h2 0)
+    (.init poly1305 (KeyParameter. sk))
+    (.update poly1305 c overhead-size (count o))
+    (.doFinal poly1305 h2 0)
 
     ;; check macs
     (when-not (Arrays/constantTimeAreEqual h1 h2)
       (throw (IllegalArgumentException. "Unable to decrypt ciphertext")))
 
     ;; decrypt plaintext
-    (.processBytes ce c 40 (count o) o 0)
+    (.processBytes xsalsa20 c overhead-size (count o) o 0)
 
     ;; return plaintext
     o))
