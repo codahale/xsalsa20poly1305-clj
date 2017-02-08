@@ -1,7 +1,7 @@
 # xsalsa20poly1305
 
-A Clojure wrapper for encryption with XSalsa20Poly1305, compatible with DJB's
-NaCl.
+A Clojure implementation of XSalsa20Poly1305 authenticated encryption,
+compatible with DJB's NaCl.
 
 ## Usage
 

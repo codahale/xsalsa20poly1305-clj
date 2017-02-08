@@ -15,10 +15,10 @@
 (deftest seal-test
   (with-mocks
     (mock! #'xsalsa/nonce {[] (codecs/str->bytes "iliveonaayellowsubmarine")})
-    (is (= (vec c) (vec (seal k p))))))
+    (is (= (codecs/bytes->hex c) (codecs/bytes->hex (seal k p))))))
 
 (deftest unseal-test
-  (is (= (vec p) (vec (unseal k c)))))
+  (is (= (codecs/bytes->hex p) (codecs/bytes->hex (unseal k c)))))
 
 (deftest tampering-test
   (let [^bytes c2 (into-array Byte/TYPE c)]

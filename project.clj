@@ -1,9 +1,9 @@
-(defproject com.codahale/xsalsa20poly1305 "0.1.1-SNAPSHOT"
-  :description "A Clojure wrapper for XSalsa20Poly1305 encryption."
+(defproject com.codahale/xsalsa20poly1305 "0.2.0-SNAPSHOT"
+  :description "A Clojure implementation of XSalsa20Poly1305 authenicated encryption."
   :url "https://github.com/codahale/xsalsa20poly1305"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[com.github.nitram509/jmacaroons "0.3.1"]]
+  :dependencies [[org.bouncycastle/bcprov-jdk15on "1.56"]]
   :deploy-repositories [["releases" :clojars]
                         ["snapshots" :clojars]]
   :global-vars {*warn-on-reflection* true}
