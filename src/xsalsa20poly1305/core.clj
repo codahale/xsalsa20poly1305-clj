@@ -33,7 +33,7 @@
     (.init xsalsa20 false (ParametersWithIV. (KeyParameter. k) n))
 
     ;; generate poly1305 subkey
-    (.processBytes xsalsa20 sk 0 (count sk) sk 0)
+    (.processBytes xsalsa20 sk 0 mac-key-size sk 0)
 
     ;; encrypt plaintext
     (.processBytes xsalsa20 p 0 (count p) o overhead-size)
@@ -78,7 +78,7 @@
     (.init xsalsa20 false (ParametersWithIV. (KeyParameter. k) n))
 
     ;; generate poly1305 subkey
-    (.processBytes xsalsa20 sk 0 (count sk) sk 0)
+    (.processBytes xsalsa20 sk 0 mac-key-size sk 0)
 
     ;; hash ciphertext
     (.init poly1305 (KeyParameter. sk))
