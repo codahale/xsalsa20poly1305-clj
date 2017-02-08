@@ -56,6 +56,10 @@
   returns the plaintext. If the ciphertext has been modified in any way, or if
   the key is incorrect, an IllegalArgumentException is thrown."
   [^bytes k ^bytes c]
+  (when-not (< overhead-size (count c))
+    ;; check for correct size
+    (throw (IllegalArgumentException. "Unable to decrypt ciphertext")))
+
   (let [xsalsa20 (XSalsa20Engine.)
         poly1305 (Poly1305.)
         n        (byte-array nonce-size)

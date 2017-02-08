@@ -20,6 +20,12 @@
 (deftest unseal-test
   (is (= (codecs/bytes->hex p) (codecs/bytes->hex (unseal k c)))))
 
+(deftest short-key-test
+  (is (thrown? IllegalArgumentException (seal (byte-array 10) p))))
+
+(deftest short-message-test
+  (is (thrown? IllegalArgumentException (unseal k (byte-array 20)))))
+
 (deftest tampering-test
   (let [^bytes c2 (into-array Byte/TYPE c)]
     ;; twiddle a single bit
