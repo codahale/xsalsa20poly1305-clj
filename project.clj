@@ -1,4 +1,4 @@
-(defproject com.codahale/xsalsa20poly1305 "0.2.1"
+(defproject com.codahale/xsalsa20poly1305 "0.2.2-SNAPSHOT"
   :description "A Clojure implementation of XSalsa20Poly1305 authenicated encryption."
   :url "https://github.com/codahale/xsalsa20poly1305"
   :license {:name "Eclipse Public License"
