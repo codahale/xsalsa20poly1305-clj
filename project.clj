@@ -7,14 +7,17 @@
   :deploy-repositories [["releases" :clojars]
                         ["snapshots" :clojars]]
   :global-vars {*warn-on-reflection* true}
-  :test-selectors {:default #(not-any? % [:bench])
-                   :bench   :bench}
-  :aliases {"bench" ["test" ":bench"]}
+  :test-selectors {:default #(not-any? % [:bench :interop])
+                   :bench   :bench
+                   :interop :interop}
+  :aliases {"bench"   ["test" ":bench"]
+            "interop" ["test" "interop"]}
   :profiles {:dev           [:project/dev :profiles/dev]
              :test          [:project/test :profiles/test]
              :profiles/dev  {:dependencies [[org.clojure/clojure "1.8.0"]
                                             [buddy/buddy-core "1.2.0"]
-                                            [criterium "0.4.4"]
+                                            [caesium "0.9.0"]
+                                            [criterium "0.4.4"]]}
              :profiles/test {}
              :project/dev   {:source-paths ["dev"]
                              :repl-options {:init-ns user}}

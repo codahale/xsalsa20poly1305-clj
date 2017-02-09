@@ -1,5 +1,6 @@
 (ns xsalsa20poly1305.core-test
   (:require [buddy.core.codecs :as codecs]
+            [caesium.crypto.secretbox :as caesium]
             [clojure.test :refer :all]
             [xsalsa20poly1305.core :refer :all :as xsalsa20poly1305]))
 
@@ -46,3 +47,12 @@
     ;; twiddle a single bit
     (aset n2 5 (byte (bit-xor (aget n2 5) 1)))
     (is (thrown? IllegalArgumentException (unseal k n2 c)))))
+
+(deftest ^:interop interop-test
+  ;; libsodium can decrypt our ciphertexts
+  (is (= (codecs/bytes->hex p) (codecs/bytes->hex (caesium/decrypt k n c))))
+
+  ;; we can decrypt libsodium ciphertexts
+  (is (= (codecs/bytes->hex p) (->> (caesium/encrypt k n p)
+                                    (unseal k n)
+                                    codecs/bytes->hex))))
