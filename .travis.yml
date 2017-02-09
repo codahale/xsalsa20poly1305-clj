@@ -4,4 +4,4 @@ install:
   - sudo dpkg -i libsodium-1.0.11_amd64.deb
 language: clojure
 jdk:
-  - openjdk8
+  - oraclejdk8
