@@ -1,5 +1,7 @@
 dist: trusty
-sudo: false
+sudo: required
+install:
+  - sudo apt-get install libsodium
 language: clojure
 jdk:
   - openjdk8

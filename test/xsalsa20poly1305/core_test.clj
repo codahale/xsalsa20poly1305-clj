@@ -48,7 +48,7 @@
     (aset n2 5 (byte (bit-xor (aget n2 5) 1)))
     (is (thrown? IllegalArgumentException (unseal k n2 c)))))
 
-(deftest ^:interop interop-test
+(deftest interop-test
   ;; libsodium can decrypt our ciphertexts
   (is (= (codecs/bytes->hex p) (codecs/bytes->hex (caesium/decrypt k n c))))
 

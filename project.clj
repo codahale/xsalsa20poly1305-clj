@@ -7,11 +7,9 @@
   :deploy-repositories [["releases" :clojars]
                         ["snapshots" :clojars]]
   :global-vars {*warn-on-reflection* true}
-  :test-selectors {:default #(not-any? % [:bench :interop])
-                   :bench   :bench
-                   :interop :interop}
-  :aliases {"bench"   ["test" ":bench"]
-            "interop" ["test" "interop"]}
+  :test-selectors {:default #(not-any? % [:bench])
+                   :bench   :bench}
+  :aliases {"bench" ["test" ":bench"]}
   :profiles {:dev           [:project/dev :profiles/dev]
              :test          [:project/test :profiles/test]
              :profiles/dev  {:dependencies [[org.clojure/clojure "1.8.0"]
