@@ -1,5 +1,5 @@
-(defproject com.codahale/xsalsa20poly1305 "0.2.2-SNAPSHOT"
-  :description "A Clojure implementation of XSalsa20Poly1305 authenicated encryption."
+(defproject com.codahale/xsalsa20poly1305 "0.3.0-SNAPSHOT"
+  :description "A Clojure implementation of XSalsa20Poly1305 authenticated encryption."
   :url "https://github.com/codahale/xsalsa20poly1305"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
@@ -15,7 +15,6 @@
              :profiles/dev  {:dependencies [[org.clojure/clojure "1.8.0"]
                                             [buddy/buddy-core "1.2.0"]
                                             [criterium "0.4.4"]
-                                            [mocko "0.2.3"]]}
              :profiles/test {}
              :project/dev   {:source-paths ["dev"]
                              :repl-options {:init-ns user}}

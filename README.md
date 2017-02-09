@@ -6,15 +6,17 @@ compatible with DJB's NaCl.
 ## Usage
 
 ```clojure
-(require '[xsalsa20poly1305.core :as xsalsa])
+(require '[xsalsa20poly1305.core :as xsalsa20poly1305])
 
-(def k (into-array Byte/TYPE "ayellowsubmarineayellowsubmarine"))
+(def k (.getBytes "ayellowsubmarineayellowsubmarine"))
 
-(def p (into-array Byte/TYPE "this is a test"))
+(def n (xsalsa20poly1305/generate-nonce))
 
-(def c (seal k p))
+(def p (.getBytes "this is a test"))
 
-(prn (unseal k c))
+(def c (xsalsa20poly1305/seal k n p))
+
+(prn (xsalsa20poly1305/unseal k n c))
 ```
 
 ## License
