@@ -60,16 +60,12 @@
   plaintext. If the ciphertext has been modified in any way, or if the key or
   nonce is incorrect, throws an IllegalArgumentException."
   [^bytes k ^bytes n ^bytes c]
-  ;; check size
-  (when-not (< mac-size (count c))
-    (throw (IllegalArgumentException. "Unable to decrypt ciphertext")))
-
   (let [xsalsa20 (XSalsa20Engine.)
         poly1305 (Poly1305.)
         sk       (byte-array mac-key-size)
         h1       (byte-array mac-size)
         h2       (byte-array mac-size)
-        o        (byte-array (- (count c) mac-size))]
+        o        (byte-array (max 0 (- (count c) mac-size)))]
 
     ;; initialize xsalsa20
     (.init xsalsa20 false (ParametersWithIV. (KeyParameter. k) n))
@@ -85,7 +81,7 @@
     (.doFinal poly1305 h1 0)
 
     ;; extract mac
-    (System/arraycopy c 0 h2 0 mac-size)
+    (System/arraycopy c 0 h2 0 (min (count c) mac-size))
 
     ;; check macs
     (when-not (MessageDigest/isEqual h1 h2)

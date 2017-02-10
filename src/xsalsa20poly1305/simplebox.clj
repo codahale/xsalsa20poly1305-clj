@@ -13,7 +13,6 @@
         o (byte-array (+ (count c) nonce-size))]
     (System/arraycopy n 0 o 0 nonce-size)
     (System/arraycopy c 0 o nonce-size (count c))
-    ;; return nonce + ciphertext
     o))
 
 (defn unseal
@@ -21,11 +20,8 @@
   the ciphertext has been modified in any way, or if the key is incorrect,
   throws an IllegalArgumentException."
   [^bytes k ^bytes c]
-  (when-not (< nonce-size (count c))
-    (throw (IllegalArgumentException. "Unable to decrypt ciphertext")))
-
   (let [n (byte-array nonce-size)
-        b (byte-array (- (count c) nonce-size))]
-    (System/arraycopy c 0 n 0 nonce-size)
-    (System/arraycopy c nonce-size b 0 (count b))
+        b (byte-array (max 0 (- (count c) nonce-size)))]
+    (System/arraycopy c 0 n 0 (min (count c) nonce-size))
+    (System/arraycopy c (min (count c) nonce-size) b 0 (count b))
     (xsalsa20poly1305/unseal k n b)))
