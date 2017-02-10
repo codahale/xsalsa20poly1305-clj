@@ -21,9 +21,6 @@
 (deftest unseal-test
   (is (= (codecs/bytes->hex p) (codecs/bytes->hex (unseal k n c)))))
 
-(deftest nonceless-roundtrip-test
-  (is (= (codecs/bytes->hex p) (codecs/bytes->hex (unseal k (seal k p))))))
-
 (deftest short-key-test
   (is (thrown? IllegalArgumentException (seal (byte-array 10) n p))))
 
@@ -31,8 +28,7 @@
   (is (thrown? IllegalArgumentException (seal k (byte-array 10) p))))
 
 (deftest short-message-test
-  (is (thrown? IllegalArgumentException (unseal k n (byte-array 12))))
-  (is (thrown? IllegalArgumentException (unseal k (byte-array 22)))))
+  (is (thrown? IllegalArgumentException (unseal k n (byte-array 12)))))
 
 (deftest tampering-test
   (let [^bytes c2 (into-array Byte/TYPE c)]
