@@ -10,6 +10,7 @@
   :test-selectors {:default #(not-any? % [:bench])
                    :bench   :bench}
   :aliases {"bench" ["test" ":bench"]}
+  :java-source-paths ["java"]
   :profiles {:dev           [:project/dev :profiles/dev]
              :test          [:project/test :profiles/test]
              :profiles/dev  {:dependencies [[org.clojure/clojure "1.8.0"]
