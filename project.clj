@@ -9,6 +9,7 @@
   :global-vars {*warn-on-reflection* true}
   :test-selectors {:default #(not-any? % [:bench])
                    :bench   :bench}
+  :java-source-paths ["java"]
   :aliases {"bench" ["test" ":bench"]}
   :profiles {:dev           [:project/dev :profiles/dev]
              :test          [:project/test :profiles/test]
