@@ -1,8 +1,12 @@
 # xsalsa20poly1305
 
 A Clojure implementation of XSalsa20Poly1305 authenticated encryption,
-compatible with DJB's NaCl. Includes a set of functions compatible with RbNaCl's
-SimpleBox construction, which automatically manages nonces for you.
+compatible with DJB's NaCl `secretbox` construction. Includes a set of functions
+compatible with RbNaCl's SimpleBox construction, which automatically manages
+nonces for you in a misuse-resistant fashion.
+
+For small messages, it's about as fast as `libsodium`-based libraries like
+Caesium and Kalium, but depends only on Bouncy Castle, which is pure Java.
 
 ## Usage
 
