@@ -15,6 +15,9 @@
 (deftest generate-nonce-test
   (is (= 24 (count (generate-nonce)))))
 
+(deftest generate-nonce-test
+  (is (= 24 (count (generate-nmr-nonce k p)))))
+
 (deftest seal-test
   (is (= (codecs/bytes->hex c) (codecs/bytes->hex (seal k n p)))))
 

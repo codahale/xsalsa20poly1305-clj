@@ -4,6 +4,7 @@
   Compatible with DBJ's NaCl/secretbox construction."
   (:import (java.security MessageDigest SecureRandom)
            (org.bouncycastle.crypto.engines XSalsa20Engine)
+           (org.bouncycastle.crypto.digests Blake2bDigest)
            (org.bouncycastle.crypto.macs Poly1305)
            (org.bouncycastle.crypto.params KeyParameter ParametersWithIV)))
 
@@ -11,12 +12,39 @@
   "The length of the required nonce in bytes."
   24)
 
+(defn- rng
+  "Returns a new SecureRandom instance. Specifically doesn't use
+  `getInstanceStrong` because on Unix systems, it pulls from `/dev/random` on
+  Java 8, which can block."
+  ^SecureRandom []
+  (SecureRandom.))
+
 (defn generate-nonce
   "Generates a random, 24-byte nonce."
   ^bytes []
-  (let [r (SecureRandom.) ; getInstanceStrong pulls from /dev/random
+  (let [r (rng)
         n (byte-array nonce-size)]
     (.nextBytes r n)
+    n))
+
+(defn generate-nmr-nonce
+  "Generates a random, misuse-resistant nonce given a key and a plaintext
+  message.
+
+  Hashes the plaintext with Blake2b-192 using the key, a random salt and
+  personalization string, returning the digest. As a result, even if the local
+  entropy is unreliable, the resulting nonce will still be unique to the
+  message."
+  ^bytes [^bytes k ^bytes p]
+  (let [blake2b (let [r  (rng)
+                      n1 (byte-array 16)
+                      n2 (byte-array 16)]
+                  (.nextBytes r n1)
+                  (.nextBytes r n2)
+                  (Blake2bDigest. k nonce-size n1 n2))
+        n       (byte-array nonce-size)]
+    (.update blake2b p (count p) 0)
+    (.doFinal blake2b n 0)
     n))
 
 (def ^:private mac-key-size 32)
