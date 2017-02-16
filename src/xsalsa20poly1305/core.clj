@@ -1,5 +1,7 @@
 (ns xsalsa20poly1305.core
-  "Functions for XSalsa20Poly1305 encryption and decryption."
+  "Functions for XSalsa20Poly1305 encryption and decryption.
+
+  Compatible with DBJ's NaCl/secretbox construction."
   (:import (java.security MessageDigest SecureRandom)
            (org.bouncycastle.crypto.engines XSalsa20Engine)
            (org.bouncycastle.crypto.macs Poly1305)
