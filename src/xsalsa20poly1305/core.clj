@@ -13,7 +13,7 @@
 
 (defn generate-nonce
   "Generates a random, 24-byte nonce."
-  []
+  ^bytes []
   (let [r (SecureRandom.) ; getInstanceStrong pulls from /dev/random
         n (byte-array nonce-size)]
     (.nextBytes r n)
