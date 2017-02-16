@@ -31,10 +31,12 @@
   "Generates a random, misuse-resistant nonce given a key and a plaintext
   message.
 
-  Hashes the plaintext with Blake2b-192 using the key, a random salt and
-  personalization string, returning the digest. As a result, even if the local
-  entropy is unreliable, the resulting nonce will still be unique to the
-  message."
+  Hashes the plaintext with Blake2b-192 using the key, a random salt, and a
+  random personalization string, returning the digest. As a result, even if the
+  local entropy is unreliable, the resulting nonce will still be unique to the
+  message. N.B.: In the event of a completely broken local entropy (e.g., all
+  zeros) duplicate plaintexts will produce duplicate messages. That had better
+  be OK."
   ^bytes [^bytes k ^bytes p]
   (let [blake2b (let [r  (rng)
                       n1 (byte-array 16)
