@@ -7,7 +7,7 @@
 (defn seal
   "Encrypts the given plaintext with the given key, returning the ciphertext.
   The key must be 32 bytes long."
-  [^bytes k ^bytes p]
+  ^bytes [^bytes k ^bytes p]
   (let [n (xsalsa20poly1305/generate-nonce)
         c (xsalsa20poly1305/seal k n p)
         o (byte-array (+ (count c) nonce-size))]
@@ -19,7 +19,7 @@
   "Decrypts the given ciphertext with the given key, returning the plaintext. If
   the ciphertext has been modified in any way, or if the key is incorrect,
   throws an IllegalArgumentException."
-  [^bytes k ^bytes c]
+  ^bytes [^bytes k ^bytes c]
   (let [n (byte-array nonce-size)
         b (byte-array (max 0 (- (count c) nonce-size)))]
     (System/arraycopy c 0 n 0 (min (count c) nonce-size))

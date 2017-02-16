@@ -60,7 +60,7 @@
   `generate-nonce`, which securely generates random nonces, or another
   arrangement which will avoid duplicate nonces. Alternatively, use the
   `simplebox/*` functions, which do all the nonce management for you."
-  [^bytes k ^bytes n ^bytes p]
+  ^bytes [^bytes k ^bytes n ^bytes p]
   (let [xsalsa20 (XSalsa20Engine.)
         poly1305 (Poly1305.)
         sk       (byte-array mac-key-size)
@@ -89,7 +89,7 @@
   "Decrypts the given ciphertext with the given key and nonce, returning the
   plaintext. If the ciphertext has been modified in any way, or if the key or
   nonce is incorrect, throws an IllegalArgumentException."
-  [^bytes k ^bytes n ^bytes c]
+  ^bytes [^bytes k ^bytes n ^bytes c]
   (let [xsalsa20 (XSalsa20Engine.)
         poly1305 (Poly1305.)
         sk       (byte-array mac-key-size)
