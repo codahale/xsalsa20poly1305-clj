@@ -63,8 +63,8 @@ messages. Please note that in this event, using `generate-nmr-nonce` to encrypt
 messages will be deterministic -- duplicate messages will produce duplicate
 ciphertexts, and this will be observable to any attackers.
 
-Because of the catastrophic downside of nonce reuse, the `simplebox` functions
-use `generate-nmr-nonce` to generate nonces.
+Because of the catastrophic downside risk of nonce reuse, the `simplebox`
+functions use `generate-nmr-nonce` to generate nonces.
 
 ## License
 
