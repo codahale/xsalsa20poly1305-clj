@@ -12,17 +12,10 @@
   "The length of the required nonce in bytes."
   24)
 
-(defn- rng
-  "Returns a new SecureRandom instance. Specifically doesn't use
-  `getInstanceStrong` because on Unix systems, it pulls from `/dev/random` on
-  Java 8, which can block."
-  ^SecureRandom []
-  (SecureRandom.))
-
 (defn generate-nonce
   "Generates a random, 24-byte nonce."
   ^bytes []
-  (let [r (rng)
+  (let [r (SecureRandom.)
         n (byte-array nonce-size)]
     (.nextBytes r n)
     n))
@@ -38,7 +31,7 @@
   zeros) duplicate plaintexts will produce duplicate messages. That had better
   be OK."
   ^bytes [^bytes k ^bytes p]
-  (let [blake2b (let [r  (rng)
+  (let [blake2b (let [r  (SecureRandom.)
                       n1 (byte-array 16)
                       n2 (byte-array 16)]
                   (.nextBytes r n1)
