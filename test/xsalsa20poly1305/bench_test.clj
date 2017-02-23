@@ -19,22 +19,26 @@
   (doseq [i sizes]
     (sep "core/seal" i)
     (let [p (byte-array i)]
-      (c/bench (xsalsa20poly1305/seal k n p)))))
+      (c/with-progress-reporting
+        (c/quick-bench (xsalsa20poly1305/seal k n p))))))
 
 (deftest ^:bench bench-caesium
   (doseq [i sizes]
     (sep "caesium/secretbox/encrypt" i)
     (let [p (byte-array i)]
-      (c/bench (secretbox/encrypt k n p)))))
+      (c/with-progress-reporting
+        (c/quick-bench (secretbox/encrypt k n p))))))
 
 (deftest ^:bench bench-caesium-nmr
   (doseq [i sizes]
     (sep "caesium/magicnonce/secretbox-nmr" i)
     (let [p (byte-array i)]
-      (c/bench (magicnonce/secretbox-nmr p k)))))
+      (c/with-progress-reporting
+        (c/quick-bench (magicnonce/secretbox-nmr p k))))))
 
 (deftest ^:bench bench-simplebox
   (doseq [i sizes]
     (sep "simplebox/seal" i)
     (let [p (byte-array i)]
-      (c/bench (simplebox/seal k p)))))
+      (c/with-progress-reporting
+        (c/quick-bench (simplebox/seal k p))))))
